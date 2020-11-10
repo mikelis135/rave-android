@@ -32,10 +32,12 @@ The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money,
 ```
 **Step 2.** Add the dependency
 
-If you want to use the default Drop In UI, add the `rave-android` module dependency
+If you want to use the default Drop In UI, add the `rave-android` module dependency and fragment dependency 
+Check https://developer.android.com/training/basics/fragments/pass-data-between for more information and the latest version on fragment result listener
 ```groovy
     dependencies {
 	     implementation 'implementation 'com.github.mikelis135:rave-android:1.1.13'
+	     implementation 'androidx.fragment:fragment:1.3.0-alpha04'
 	}
 ```
 **Step 3.** Add the  `INTERNET` permission to your android manifest
