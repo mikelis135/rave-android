@@ -4,11 +4,10 @@
 
 # Flutterwave Android SDK
 
-Flutterwave's Android SDK can be used to integrate the Flutterwave payment gateway into your android app. It comes with a ready-made Drop In UI and non-UI module, depending on your preference.
+Flutterwave's Android SDK can be used to integrate the Flutterwave payment gateway into your android app. You can drop our payment sdk inside your app easily and it performs all its processing without leaving your app also choose any payment option to show directly
 
 The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money, UG Mobile Money, ZM Mobile Money, Rwanda Mobile Money, Franc Mobile Money, US ACH, UK Bank, SA Bank, Nigeria Bank Account, Nigeria Bank Transfer, Barter Mobile Wallet.
-
-You can drop our payment sdk inside your app easily and it performs all its processing without leaving your app 
+ 
 
 <img alt="Screenshot of Drop-In" src="https://i.imgur.com/UZZkC6e.png" width="900"/>
 
@@ -138,7 +137,7 @@ Set the public key, encryption key and other required parameters. The `RaveUiMan
 ###  2. Handle the response
 In the calling Frgament, use the setFragmentResultListener method to receive the payment response as shown below
 ```java
-	  getParentFragmentManager().setFragmentResultListener(RAVE_REQUEST_KEY, this, new FragmentResultListener() {
+	getParentFragmentManager().setFragmentResultListener(RAVE_REQUEST_KEY, this, new FragmentResultListener() {
 	  
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
@@ -151,23 +150,23 @@ In the calling Frgament, use the setFragmentResultListener method to receive the
 			 *  sure everything checks out before providing service or goods.
 			*/
 	
-         if (requestCode == RaveConstants.RAVE_REQUEST_CODE && result != null) {
+         	if (requestCode == RaveConstants.RAVE_REQUEST_CODE && result != null) {
 
-		String message = result.getString("response");
+			String message = result.getString("response");
 
-		    if (message != null) {
-			Log.d("rave response", message);
-		    }
+			    if (message != null) {
+				Log.d("rave response", message);
+			    }
 
-		    if (resultCode == RavePayActivity.RESULT_SUCCESS) {
-			Toast.makeText(requireContext(), "SUCCESS " + message, Toast.LENGTH_SHORT).show();
-		    } else if (resultCode == RavePayActivity.RESULT_ERROR) {
-			Toast.makeText(requireContext(), "ERROR " + message, Toast.LENGTH_SHORT).show();
-		    } else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
-			Toast.makeText(requireContext(), "CANCELLED " + message, Toast.LENGTH_SHORT).show();
-		    }
+			    if (resultCode == RavePayActivity.RESULT_SUCCESS) {
+				Toast.makeText(requireContext(), "SUCCESS " + message, Toast.LENGTH_SHORT).show();
+			    } else if (resultCode == RavePayActivity.RESULT_ERROR) {
+				Toast.makeText(requireContext(), "ERROR " + message, Toast.LENGTH_SHORT).show();
+			    } else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
+				Toast.makeText(requireContext(), "CANCELLED " + message, Toast.LENGTH_SHORT).show();
+			    }
 		    
-           }
+          	 }
     }
     
 ```
