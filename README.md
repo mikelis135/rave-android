@@ -8,6 +8,8 @@ Flutterwave's Android SDK can be used to integrate the Flutterwave payment gatew
 
 The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money, UG Mobile Money, ZM Mobile Money, Rwanda Mobile Money, Franc Mobile Money, US ACH, UK Bank, SA Bank, Nigeria Bank Account, Nigeria Bank Transfer, Barter Mobile Wallet.
 
+You can drop our payment sdk inside your app easily and it performs all its processing without leaving your app 
+
 <img alt="Screenshot of Drop-In" src="https://i.imgur.com/UZZkC6e.png" width="900"/>
 
 ## Before you begin
@@ -89,6 +91,7 @@ Set the public key, encryption key and other required parameters. The `RaveUiMan
                         .setSubAccounts(List<SubAccount>)
                         .shouldDisplayFee(boolean)
                         .showStagingLabel(boolean)
+			.embedFragment(int, appcompatActivity)
                         .initialize();
 
 
@@ -131,6 +134,7 @@ Set the public key, encryption key and other required parameters. The `RaveUiMan
 | setPaymentPlan(payment_plan) | If you want to do recurrent payment, this is the payment plan ID to use for the recurring payment, you can see how to create payment plans [here](https://flutterwavedevelopers.readme.io/v2.0/reference#create-payment-plan) and [here](https://flutterwavedevelopers.readme.io/docs/recurring-billing). This is only available for card payments | `String` | Not Required
 | shouldDisplayFee(boolean) | Set to `false` to not display a dialog for confirming total amount(including charge fee) that Rave will charge. By default this is set to `true` | `boolean` | Not Required
 | showStagingLabel(boolean) | Set to `false` to not display a staging label when in staging environment. By default this is set to `true` | `boolean` | Not Required
+| embedFragment(int, appcompatActivity) | Accepts an id of a view (int) and an appcompatActivity and embeds the rave payment ui into the view,   |  int, appcompatActivity | Required
 | initialize() | Launch the Rave Payment UI for when using the UI module,   |  N/A | Required
 
 > <strong>Note:</strong> The order in which you call the methods for accepting different payment types is the order in which they will show in the UI.
@@ -140,90 +144,39 @@ Set the public key, encryption key and other required parameters. The `RaveUiMan
 
 
 ###  2. Handle the response
-In the calling activity, override the `onActivityResult` method to receive the payment response as shown below
+In the calling Frgament, use the setFragmentResultListener method to receive the payment response as shown below
 ```java
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	  getParentFragmentManager().setFragmentResultListener(RAVE_REQUEST_KEY, this, new FragmentResultListener() {
+	  
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+		
+		int resultCode = result.getInt("resultCode");
+                int requestCode = result.getInt("requestCode");
         /*
          *  We advise you to do a further verification of transaction's details on your server to be
          *  sure everything checks out before providing service or goods.
         */
-        if (requestCode == RaveConstants.RAVE_REQUEST_CODE && data != null) {
-            String message = data.getStringExtra("response");
-            if (resultCode == RavePayActivity.RESULT_SUCCESS) {
-                Toast.makeText(this, "SUCCESS " + message, Toast.LENGTH_SHORT).show();
-            }
-            else if (resultCode == RavePayActivity.RESULT_ERROR) {
-                Toast.makeText(this, "ERROR " + message, Toast.LENGTH_SHORT).show();
-            }
-            else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
-                Toast.makeText(this, "CANCELLED " + message, Toast.LENGTH_SHORT).show();
-            }
-        }
-        else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+	
+         if (requestCode == RaveConstants.RAVE_REQUEST_CODE && result != null) {
+
+		String message = result.getString("response");
+
+		    if (message != null) {
+			Log.d("rave response", message);
+		    }
+
+		    if (resultCode == RavePayActivity.RESULT_SUCCESS) {
+			Toast.makeText(requireContext(), "SUCCESS " + message, Toast.LENGTH_SHORT).show();
+		    } else if (resultCode == RavePayActivity.RESULT_ERROR) {
+			Toast.makeText(requireContext(), "ERROR " + message, Toast.LENGTH_SHORT).show();
+		    } else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
+			Toast.makeText(requireContext(), "CANCELLED " + message, Toast.LENGTH_SHORT).show();
+		    }
+		    
+           }
     }
     
-```
-
-The intent's `message` object contains the raw JSON response from the Rave API. This can be parsed to retrieve any additional payment information needed. Typical success response can be found [here](https://gist.github.com/bolaware/305ef5a6df7744694d9c35787580a2d2) and failed response [here](https://gist.github.com/bolaware/afa972cbca782bbb942984ddec9f5262).
-
-> **PLEASE NOTE**
->  We advise you to do a further verification of transaction's details on your server to be
- sure everything checks out before providing service or goods.
-
-###  3. Customize the look
-You can apply a new look by changing the color of certain parts of the UI to highlight your brand colors.
-
-First specify the theme in your `styles.xml` file. In this theme, you can edit the style for each of the elements you'd like to style, like the pay button, OTP button, etc.
-```XML
-    <style name="MyCustomTheme" parent="RaveAppTheme.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="OTPButtonStyle">@style/otpBtnStyle2</item>
-        <item name="PayButtonStyle">@style/payBtnStyle2</item>
-        <item name="OTPHeaderStyle">@style/otpHeaderStyle2</item>
-        <item name="TabLayoutStyle">@style/tabLayoutStyle2</item>
-        <item name="PinHeaderStyle">@style/pinHeaderStyle2</item>
-        <item name="PaymentTileStyle">@style/myPaymentTileStyle</item>
-        <item name="PaymentTileTextStyle">@style/myPaymentTileTextStyle</item>
-        <item name="PaymentTileDividerStyle">@style/myPaymentTileDividerStyle</item>
-    </style>
-```
-
- Then in your RavePayManager setup, add `.withTheme(<Reference to your style>)` anywhere before calling the `initialize()` function. e.g.
- ```java
-  new RavePayManager(activity).setAmount(amount)
-                    //...
-                    //...
-                    .withTheme(R.Style.MyCustomTheme)
-                    .initialize();
-```
-> There is a limit to which the drop-in UI can be customized. For further customization, see our Custom UI implemetation guide [here](CustomUiImplementation.md).
-
-
-## Configuring Proguard
-To configure Proguard, add the following lines to your proguard configuration file. These will keep files related to this sdk
-```
-keepclasseswithmembers public class com.flutterwave.raveandroid.** { *; }
-dontwarn com.flutterwave.raveandroid.card.CardFragment
-```
-
-
-##  Help
-* Have issues integrating? Join our [Slack community](https://join.slack.com/t/flutterwavedevelopers/shared_invite/zt-7mdxu82t-~WwizwN3eWKjUXLY275AzQ) for support
-* Find a bug? [Open an issue](https://github.com/Flutterwave/rave-android/issues)
-* Want to contribute? [Check out contributing guidelines]() and [submit a pull request](https://help.github.com/articles/creating-a-pull-request).
-
-## Want to contribute?
-
-Feel free to create issues and pull requests. The more concise the pull requests the better :)
-
-
-## License
-
 ```
 Rave's Android SDK
 MIT License
