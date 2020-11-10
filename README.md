@@ -48,7 +48,7 @@ If you want to use the default Drop In UI, add the `rave-android` module depende
 ## Usage
 ### For using the default UI
 ###  1. Create a `RaveUiManager` instance
-Set the public key, encryption key and other required parameters. The `RaveUiManager` accepts a mandatory instance of the calling `Fragment` and an instance of the parent `Activity`).
+Set the public key, encryption key and other required parameters. The `RaveUiManager` accepts a mandatory instance of the calling `Fragment` and an instance of the parent `Activity`.
 
         new RaveUiManager(fragment).setAmount(amount)
                         .setCurrency(currency)
