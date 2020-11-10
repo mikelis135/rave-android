@@ -20,6 +20,8 @@ The payment methods currently supported are Cards, USSD, Mpesa, GH Mobile Money,
 
 ## Adding it to your project
 
+For quick sample implementation, check here https://github.com/mikelis135/RaveEmbed
+
 
 **Step 1.** Add it in your root build.gradle at the end of repositories:
 ```groovy
