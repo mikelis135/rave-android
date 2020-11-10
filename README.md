@@ -36,15 +36,7 @@ You can drop our payment sdk inside your app easily and it performs all its proc
 If you want to use the default Drop In UI, add the `rave-android` module dependency
 ```groovy
     dependencies {
-	     implementation 'com.github.flutterwave.rave-android:rave_android:2.1.10'
-	}
-```
-
-if you are not interested in our default UI and you want to use yours and only want to interact with our core sdk, use the `rave_presentation` module
-
-```groovy
-    dependencies {
-	     implementation 'com.github.Flutterwave.rave-android:rave_presentation:2.1.10'
+	     implementation 'implementation 'com.github.mikelis135:rave-android:1.1.13'
 	}
 ```
 **Step 3.** Add the  `INTERNET` permission to your android manifest
@@ -52,14 +44,14 @@ if you are not interested in our default UI and you want to use yours and only w
      <uses-permission android:name="android.permission.INTERNET" /> 
 
 
-> The steps below show how to use the Flutterwave Android SDK as a Drop-in UI (all the views for the payment process are handled by the SDK). If you would like to use your own custom UI instead, please see the continuation [here](CustomUiImplementation.md).
+> The steps below show how to use the Flutterwave Android SDK as a Drop-in UI (all the views for the payment process are handled by the SDK).
 
 ## Usage
 ### For using the default UI
 ###  1. Create a `RaveUiManager` instance
-Set the public key, encryption key and other required parameters. The `RaveUiManager` accepts a mandatory instance of  the calling `Activity` (or a `Fragment` that has a parent activity).
+Set the public key, encryption key and other required parameters. The `RaveUiManager` accepts a mandatory instance of the calling `Fragment` and an instance of the parent `Activity`).
 
-        new RaveUiManager(activity).setAmount(amount)
+        new RaveUiManager(fragment).setAmount(amount)
                         .setCurrency(currency)
                         .setEmail(email)
                         .setfName(fName)
@@ -91,7 +83,7 @@ Set the public key, encryption key and other required parameters. The `RaveUiMan
                         .setSubAccounts(List<SubAccount>)
                         .shouldDisplayFee(boolean)
                         .showStagingLabel(boolean)
-			.embedFragment(int, appcompatActivity)
+			    .embedFragment(int, appcompatActivity)
                         .initialize();
 
 
@@ -153,10 +145,11 @@ In the calling Frgament, use the setFragmentResultListener method to receive the
 		
 		int resultCode = result.getInt("resultCode");
                 int requestCode = result.getInt("requestCode");
-        /*
-         *  We advise you to do a further verification of transaction's details on your server to be
-         *  sure everything checks out before providing service or goods.
-        */
+		
+			/*
+			 *  We advise you to do a further verification of transaction's details on your server to be
+			 *  sure everything checks out before providing service or goods.
+			*/
 	
          if (requestCode == RaveConstants.RAVE_REQUEST_CODE && result != null) {
 
