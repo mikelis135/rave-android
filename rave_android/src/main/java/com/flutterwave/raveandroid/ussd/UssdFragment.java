@@ -256,7 +256,7 @@ public class UssdFragment extends Fragment implements UssdUiContract.View, View.
     }
 
     public void showToast(String message) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(requireContext(), message+"", Toast.LENGTH_SHORT).show();
     }
 
     @Override
